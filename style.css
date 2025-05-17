@@ -18,7 +18,7 @@ body {
     height: 100%;
     border-radius: 50%;
     background: radial-gradient(circle at center, #555 0%, #222 100%);
-    border: 5px solid #fff;
+    border: 5px solid #000;
     cursor: grab;
     transition: transform 0.1s ease;
 }
@@ -30,9 +30,9 @@ body {
     left: 50%;
     width: 4px;
     height: 45%;
-    background: red;
+    background: #000;
     transform-origin: bottom center;
     transform: translate(-50%, -100%);
     z-index: 2;
-    box-shadow: 0 0 4px red;
+    box-shadow: 0 0 4px #000;
 }
