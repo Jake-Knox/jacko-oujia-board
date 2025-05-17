@@ -5,6 +5,23 @@ body {
     justify-content: center;
     align-items: center;
     background: #111;
+    flex-direction: column;
+}
+
+#startButton {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background: #444;
+    color: white;
+    margin-bottom: 20px;
+    transition: background 0.3s ease;
+}
+
+#startButton:hover {
+    background: #666;
 }
 
 .dial-container {

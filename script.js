@@ -1,4 +1,6 @@
 const dial = document.getElementById("dial");
+const dialContainer = document.querySelector(".dial-container");
+const startButton = document.getElementById("startButton");
 
 let isDragging = false;
 let centerX, centerY;
@@ -14,7 +16,6 @@ console.log("Target Angle:", targetAngle);
 const staticAudio = new Audio('static.mp3');
 staticAudio.loop = true;
 staticAudio.volume = 0.01;
-staticAudio.play().catch((e) => console.error("Audio play failed:", e));
 
 // --- Randomized celebration sounds ---
 const reactionSounds = ['hee-hee.mp3', 'shamone.mp3'];
@@ -39,6 +40,18 @@ function getAngleFromCenter(x, y) {
     const dy = y - centerY;
     return Math.atan2(dy, dx) * (180 / Math.PI);
 }
+
+// --- Start button event ---
+startButton.addEventListener("click", () => {
+    // Hide the start button
+    startButton.style.display = "none";
+
+    // Show the dial container
+    dialContainer.style.display = "block";
+
+    // Play static audio after user interaction
+    staticAudio.play().catch((e) => console.error("Audio play failed:", e));
+});
 
 // --- Event Listeners ---
 dial.addEventListener("mousedown", (e) => {
