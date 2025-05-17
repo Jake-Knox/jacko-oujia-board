@@ -15,7 +15,7 @@ console.log("Target Angle:", targetAngle);
 // --- Static sound setup ---
 const staticAudio = new Audio('static.mp3');
 staticAudio.loop = true;
-staticAudio.volume = 0.01;
+staticAudio.volume = 0.02;
 
 // --- Randomized celebration sounds ---
 const reactionSounds = ['hee-hee.mp3', 'shamone.mp3'];
@@ -41,24 +41,28 @@ function getAngleFromCenter(x, y) {
     return Math.atan2(dy, dx) * (180 / Math.PI);
 }
 
-// --- Start button event ---
-startButton.addEventListener("click", () => {
-    // Hide the start button
-    startButton.style.display = "none";
-
-    // Show the dial container
-    dialContainer.style.display = "block";
-
-    // Play static audio after user interaction
-    staticAudio.play().catch((e) => console.error("Audio play failed:", e));
-});
-
-// --- Event Listeners ---
-dial.addEventListener("mousedown", (e) => {
-    isDragging = true;
+function updateCenter() {
     const rect = dial.getBoundingClientRect();
     centerX = rect.left + rect.width / 2;
     centerY = rect.top + rect.height / 2;
+}
+
+// --- Start button event ---
+startButton.addEventListener("click", () => {
+    startButton.style.display = "none";
+    dialContainer.style.display = "block";
+
+    // Update center on start
+    updateCenter();
+
+    staticAudio.play().catch((e) => console.error("Audio play failed:", e));
+});
+
+// --- Mouse Events ---
+dial.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    isDragging = true;
+    updateCenter();
     previousMouseAngle = getAngleFromCenter(e.clientX, e.clientY);
 });
 
@@ -68,6 +72,7 @@ document.addEventListener("mouseup", () => {
 
 document.addEventListener("mousemove", (e) => {
     if (!isDragging) return;
+    e.preventDefault();
 
     const currentMouseAngle = getAngleFromCenter(e.clientX, e.clientY);
     let delta = currentMouseAngle - previousMouseAngle;
@@ -80,12 +85,56 @@ document.addEventListener("mousemove", (e) => {
 
     dial.style.transform = `rotate(${virtualAngle}deg)`;
 
+    checkAngle();
+});
+
+// --- Touch Events ---
+dial.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    if (e.touches.length !== 1) return; // only single touch
+    isDragging = true;
+    updateCenter();
+    const touch = e.touches[0];
+    previousMouseAngle = getAngleFromCenter(touch.clientX, touch.clientY);
+});
+
+document.addEventListener("touchend", (e) => {
+    if (e.touches.length === 0) {
+        isDragging = false;
+    }
+});
+
+document.addEventListener("touchcancel", () => {
+    isDragging = false;
+});
+
+document.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    if (e.touches.length !== 1) return;
+    e.preventDefault();
+
+    const touch = e.touches[0];
+    const currentMouseAngle = getAngleFromCenter(touch.clientX, touch.clientY);
+    let delta = currentMouseAngle - previousMouseAngle;
+
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+
+    virtualAngle += delta;
+    previousMouseAngle = currentMouseAngle;
+
+    dial.style.transform = `rotate(${virtualAngle}deg)`;
+
+    checkAngle();
+});
+
+function checkAngle() {
     const displayAngle = ((virtualAngle % 360) + 360) % 360;
     const diff = Math.abs(displayAngle - targetAngle);
     const angleDiff = Math.min(diff, 360 - diff);
 
     // Continuous volume scaling
-    const maxVolume = 0.01;
+    const maxVolume = 0.02;
     const maxAngle = 90;
     const scaledVolume = Math.min(maxVolume, (angleDiff / maxAngle) * maxVolume);
     staticAudio.volume = scaledVolume;
@@ -102,4 +151,4 @@ document.addEventListener("mousemove", (e) => {
     } else {
         inZone = false;
     }
-});
+}

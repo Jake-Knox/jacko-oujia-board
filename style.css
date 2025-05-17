@@ -1,11 +1,22 @@
+html,
 body {
     margin: 0;
-    height: 100vh;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    /* prevent scrolling */
+    background: #111;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #111;
     flex-direction: column;
+    -webkit-touch-callout: none;
+    /* prevent long press menu on iOS */
+    -webkit-user-select: none;
+    /* disable text selection */
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #startButton {
@@ -16,8 +27,10 @@ body {
     border-radius: 5px;
     background: #444;
     color: white;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
     transition: background 0.3s ease;
+    max-width: 90vw;
+    word-wrap: break-word;
 }
 
 #startButton:hover {
@@ -25,19 +38,29 @@ body {
 }
 
 .dial-container {
-    width: 300px;
-    height: 300px;
+    width: 90vw;
+    max-width: 300px;
+    height: 90vw;
+    max-height: 300px;
     position: relative;
+    touch-action: none;
+    /* prevent default touch behaviors */
 }
 
 .dial {
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 90%;
     border-radius: 50%;
     background: radial-gradient(circle at center, #555 0%, #222 100%);
     border: 5px solid #000;
     cursor: grab;
     transition: transform 0.1s ease;
+    touch-action: none;
+    /* prevent default touch behaviors */
+}
+
+.dial:active {
+    cursor: grabbing;
 }
 
 .dial::after {
